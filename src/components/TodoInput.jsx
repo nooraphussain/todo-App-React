@@ -1,12 +1,24 @@
-import {React, useState} from 'react';
+import { React, useState, useEffect } from 'react';
 
-function TodoInput({addTodo}) {
+function TodoInput({ addTodo, editTodo, todoToEdit, setTodoToEdit }) {
   const [task, setTask] = useState({
     title: "",
     description: "",
     priority: "Low",
     dueDate: "",
   });
+
+  // Prefill form when editing
+  useEffect(() => {
+    if (todoToEdit) {
+      setTask({
+        title: todoToEdit.title,
+        description: todoToEdit.description,
+        priority: todoToEdit.priority,
+        dueDate: todoToEdit.dueDate,
+      });
+    }
+  }, [todoToEdit]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -15,13 +27,20 @@ function TodoInput({addTodo}) {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (!task.title.trim()) return; // must have title
-    addTodo(task);
-    setTask({ title: "", description: "", priority: "Low", dueDate: "" }); // reset form
+    if (!task.title.trim()) return;
+
+    if (todoToEdit) {
+      editTodo(todoToEdit.id, task);
+      setTodoToEdit(null); // clear edit mode
+    } else {
+      addTodo(task);
+    }
+
+    setTask({ title: "", description: "", priority: "Low", dueDate: "" });
   };
 
   return (
-       <form className="todo-input" onSubmit={handleSubmit}>
+    <form className="todo-input" onSubmit={handleSubmit}>
       <input
         type="text"
         name="title"
@@ -53,7 +72,7 @@ function TodoInput({addTodo}) {
         />
       </div>
 
-      <button type="submit">Add Task</button>
+      <button type="submit">{todoToEdit ? "Update Task" : "Add Task"}</button>
     </form>
   );
 }

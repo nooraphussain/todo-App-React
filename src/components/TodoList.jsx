@@ -1,4 +1,4 @@
-export default function TodoList({ todos, deleteTodo, toggleTodo }) {
+export default function TodoList({ todos, deleteTodo, toggleTodo, setTodoToEdit }) {
   return (
     <ul className="todo-list">
       {todos.map((todo) => (
@@ -21,12 +21,22 @@ export default function TodoList({ todos, deleteTodo, toggleTodo }) {
               )}
             </div>
           </div>
-          
+
           <span className={`priority ${todo.priority.toLowerCase()}`}>
-                {todo.priority}
+            {todo.priority}
           </span>
 
-          <button className="delete-btn" onClick={() => deleteTodo(todo.id)}>
+          <button
+            className="edit-btn"
+            onClick={() => setTodoToEdit(todo)}
+          >
+            ✍🏽
+          </button>
+
+          <button
+            className="delete-btn"
+            onClick={() => deleteTodo(todo.id)}
+          >
             🗑️
           </button>
         </li>
